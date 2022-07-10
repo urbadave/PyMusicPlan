@@ -1,3 +1,4 @@
+from ast import arg
 from typing import NamedTuple
 import re
 
@@ -7,12 +8,11 @@ class Album(NamedTuple):
     year: int
     index: int
 
-# a1 = Album("2pac", "All Eyez On Me", 1996, 1)
-# a2 = Album("Led Zeppelin", "Physical Graphiti", 1975, 136)
-# a3 = Album("Led Zeppelin", "IV", 1971, 135)
 class AlbumList:
     def __init__(self):
         self.MyList = []
+        self.ArtistLen = 0
+        self.TitleLen = 0
     
     def addAlbum(self, album: Album):
         if(album not in self.MyList):
@@ -24,12 +24,19 @@ class AlbumList:
             for line in lines:
                 sp = re.split("\t+", line)
                 #print(sp)
-                self.addAlbum(Album(sp[0], sp[1], int(sp[2]), int(sp[3])))
+                artist, title, year, index = sp
+                if(len(artist) > self.ArtistLen):
+                    self.ArtistLen = len(artist)
+                if(len(title) > self.TitleLen):
+                    self.TitleLen = len(title)
+                self.addAlbum(Album(artist, title, int(year), int(index)))
 
 
 alist = AlbumList()
 fp = r"C:\Users\urban\Documents\MusicAlbums\Music Albums - Albums.tsv"
 alist.loadFromFile(fp)
 print("There are", len(alist.MyList), "albums")
-for a in alist.MyList:
-    print(a)
+print("Artist length is", alist.ArtistLen)
+print("TItle length is", alist.TitleLen)
+# for a in alist.MyList:
+#     print(a)
