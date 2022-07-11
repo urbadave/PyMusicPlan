@@ -31,6 +31,15 @@ class AlbumList:
                     self.TitleLen = len(title)
                 self.addAlbum(Album(artist, title, int(year), int(index)))
 
+    def prettyAlbum(self, album: Album):
+        return f'{str.ljust(album.artist, self.ArtistLen)} {str.ljust(album.title, self.TitleLen)} {album.year}'
+    
+    def prettyList(self):
+        prettyLines = []
+        for a in self.MyList:
+            prettyLines.append(self.prettyAlbum(a))
+        return prettyLines
+
 
 alist = AlbumList()
 fp = r"C:\Users\urban\Documents\MusicAlbums\Music Albums - Albums.tsv"
@@ -38,5 +47,7 @@ alist.loadFromFile(fp)
 print("There are", len(alist.MyList), "albums")
 print("Artist length is", alist.ArtistLen)
 print("TItle length is", alist.TitleLen)
-# for a in alist.MyList:
-#     print(a)
+pretty = alist.prettyList()
+
+for p in pretty:
+    print(p)
