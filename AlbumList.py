@@ -1,6 +1,7 @@
 from ast import arg
 from typing import NamedTuple
 import re
+import random
 
 class Album(NamedTuple):
     artist: str
@@ -36,21 +37,38 @@ class AlbumList:
                     self.TitleLen = len(title)
                 self.addAlbum(Album(artist, title, int(year), int(index)))
 
+    def cloneAlbum(self, album: Album):
+        return Album(album.artist, album.title, album.year, album.index)
+    
+    def scambleList(self, alist: list):
+        #clone list
+        retVal = alist.copy()
+        random.seed()
+        top = len(alist)-1
+        #foreach item in clone
+        for i in range(top):
+            index = random.randint(0, top)
+            save = self.cloneAlbum(retVal[i])
+            retVal[i] = retVal[index]
+            retVal[index] = save
+        #return scrambled list
+        return retVal
+
     def prettyAlbum(self, album: Album):
         return f'{album.artist.ljust(self.ArtistLen, " ")} {album.title.ljust(self.TitleLen, " ")} {album.year}'
     
-    def prettyList(self, addNewline: bool = False):
+    def prettyList(self, alist: list, addNewline: bool = False):
         prettyLines = []
         extra = ''
         if(addNewline):
             extra = '\n'
-        for a in self.MyList:
+        for a in alist:
             prettyLines.append(self.prettyAlbum(a)+extra)
         return prettyLines
 
-    def writeFile(self, fileName: str):
+    def writeFile(self, alist: list, fileName: str):
         fullPath = self.createFullPath(fileName)
-        linesToWrite = self.prettyList(True)
+        linesToWrite = self.prettyList(alist, True)
         with open(fullPath, 'w', encoding='utf-8') as f:
             f.writelines(linesToWrite)
         return linesToWrite
@@ -65,7 +83,10 @@ print("Artist length is", alist.ArtistLen)
 print("TItle length is", alist.TitleLen)
 #pretty = alist.prettyList()
 
-pretty = alist.writeFile("testFile.txt")
+randoList = alist.scambleList(alist.MyList)
+#pretty = alist.prettyList(randoList)
+
+pretty = alist.writeFile(randoList, "testFile.txt")
 
 for p in pretty:
     print(p)
